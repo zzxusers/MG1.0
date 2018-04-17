@@ -27,6 +27,7 @@ public class Fileload {
 	@ResponseBody
     public String  springUpload(HttpServletRequest request,@RequestParam MultipartFile[] file) throws IllegalStateException, IOException{
 		//第一次
+		//第二次
 		//定义两个上传文件的路径
         String wkpicpath = null;
         String hdpicpath = null;
