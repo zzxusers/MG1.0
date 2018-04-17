@@ -68,7 +68,7 @@ public class AuthorityController {
 		}
 		return JSON.toJSONString("成功");
 	}
-	//删除权限组
+	//删除权限组1
 	@RequestMapping(value="/delauthority",produces={"application/json;charset=utf-8"},method=RequestMethod.POST)
 	@ResponseBody
 	public Object del_authority(Integer id){
