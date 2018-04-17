@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mg.application.authority.dao.AuthorityDAO">
+	<insert id="add_authority" useGeneratedKeys="true" keyProperty="zuauto.id">
+		insert into zu_authority values(0,#{zuauto.name});
+	</insert>
+	<select id="sel_authority" resultMap="ZuAuthoritys">
+		select  z.id,z.name,j.organizeid,j.idj idjs,j.status  from  zu_authority z,j_authority j where 1 = 1
+		<if test="id!=null">and z.id = #{id} and j.idj =#{id} and j.status =1</if>
+	</select>
+	<resultMap type="ZuAuthority" id="ZuAuthoritys">  
+        <id column="id" property="id"/>  
+        <result column="name" property="name"/> 
+        <collection property="lij" ofType="Organizeauthority">  
+            <result column="idj" property="idj"/>
+            <result column="organizeid" property="organizeid"/>  
+            <result column="status" property="status"/>  
+        </collection>  
+    </resultMap> 
+    <update id="upd_authority">
+    	update zu_authority set name = #{name} where id = #{zu_id}
+    </update>
+    <delete id="del_authority">
+    	delete from zu_authority where id = #{zu_id};
+    	delete from j_authority where idj = #{zu_id};
+    	delete from s_authority where zu_id = #{zu_id}; 
+    </delete>
+    
+</mapper>

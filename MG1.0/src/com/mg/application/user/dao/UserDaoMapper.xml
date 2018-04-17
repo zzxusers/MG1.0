@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mg.application.user.dao.UserDao">
+<!-- private Integer id;
+	private String username;//姓名
+	private String loginname;//登录账户
+	private String password;
+	private Integer usertype;//账户类型（超级管理员1，普通操作员2）
+	private Integer sex;//性别（男1，女0）
+	private String phone;
+	private String email;
+	private Menuauthority menuauth;
+	private Organizeauthority organauth; 
+	status
+	-->
+	<select id="user_login" resultMap="Users">
+	select s.*,c.cid,c.zid from users s,c_authority c where s.loginname =#{user.loginname} and password = #{user.password} and s.authority = c.zid and c.status = 1
+		<!-- select * from users s where loginname=#{user.loginname} and password=#{user.password} -->
+		<!-- select * from users s,c_authority c where s.menuauthority = c.id and loginname=#{user.loginname} and password=#{user.password} -->
+	</select>
+	<resultMap type="User" id="Users">
+        <id property="id" column="id"/>   
+        <result property="username" column="username"/>
+        <result property="loginname" column="loginname"/>
+        <result property="password" column="password"/>
+        <result property="usertype" column="usertype"/>
+        <result property="sex" column="sex"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="status" column="status"/>
+        <collection property="li" ofType="Menuauthority"> 
+        	<result column="zid" property="zid"/>  
+            <result column="cid" property="cid"/>
+            <result column="status" property="status"/>
+        </collection>
+    </resultMap>
+	<insert id="add_user" parameterType="User">
+		insert into users (username,loginname,password,usertype,sex,phone,email,status)
+		values(#{user.username},#{user.loginname},#{user.password},#{user.usertype},
+		#{user.sex},#{user.phone},#{user.email},#{user.status})
+	</insert>
+	<delete id="del_user" parameterType="Integer">
+		delete from users where id = #{userid}
+	</delete>
+	<update id="upd_user" parameterType="User">
+		update users
+		<trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+			<if test="username != null">username=#{username},</if>
+			<if test="loginname != null">loginname=#{loginname},</if>
+			<if test="password != null">password=#{password},</if>
+			<if test="usertype != null">usertype=#{usertype},</if>
+			<if test="sex != null">sex=#{sex},</if>
+			<if test="phone != null">phone=#{phone},</if>
+			<if test="email != null">email=#{email},</if>
+			<if test="status != null">status=#{status}</if>
+			<if test="authority != null">authority=#{authority}</if>
+		</trim>
+	</update>
+	<select id="sel_user" resultType="User">
+		select * from users <if test="id != null">where id=#{id}</if>
+	</select>
+	<!-- <insert id="add" parameterType="AppInfo">
+		insert into app_info (softwareName,APKName,supportROM,interfaceLanguage,updateDate,softwareSize,
+							devId,appInfo,status,onSaleDate,offSaleDate,categoryLevel1,categoryLevel2,
+							categoryLevel3,downloads,flatformId,logoPicPath,logoLocPath,createdBy,creationDate)
+				values(#{softwareName},#{APKName},#{supportROM},#{interfaceLanguage},#{updateDate},
+					   #{softwareSize},#{devId},#{appInfo},#{status},#{onSaleDate},#{offSaleDate},
+					   #{categoryLevel1},#{categoryLevel2},#{categoryLevel3},#{downloads},
+					   #{flatformId},#{logoPicPath},#{logoLocPath},#{createdBy},#{creationDate})
+	</insert>
+	
+	<update id="modify" parameterType="AppInfo">
+		update app_info
+		<trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+			<if test="softwareName != null">softwareName=#{softwareName},</if>
+			<if test="APKName != null">APKName=#{APKName},</if>
+			<if test="supportROM != null">supportROM=#{supportROM},</if>
+			<if test="interfaceLanguage != null">interfaceLanguage=#{interfaceLanguage},</if>
+			<if test="updateDate != null">updateDate=#{updateDate},</if>
+			<if test="softwareSize != null">softwareSize=#{softwareSize},</if>
+			<if test="appInfo != null">appInfo=#{appInfo},</if>
+			<if test="status != null">status=#{status},</if>
+			<if test="onSaleDate != null">onSaleDate=#{onSaleDate},</if>
+			<if test="offSaleDate != null">offSaleDate=#{offSaleDate},</if>
+			<if test="categoryLevel1 != null">categoryLevel1=#{categoryLevel1},</if>
+			<if test="categoryLevel2 != null">categoryLevel2=#{categoryLevel2},</if>
+			<if test="categoryLevel3 != null">categoryLevel3=#{categoryLevel3},</if>
+			<if test="downloads != null">downloads=#{downloads},</if>
+			<if test="flatformId != null">flatformId=#{flatformId},</if>
+			<if test="logoPicPath != null">logoPicPath=#{logoPicPath},</if>
+			<if test="logoLocPath != null">logoLocPath=#{logoLocPath},</if>
+			<if test="modifyBy != null">modifyBy=#{modifyBy},</if>
+			<if test="modifyDate != null">modifyDate=#{modifyDate},</if>
+		</trim>
+	</update>
+	
+	<delete id="deleteAppInfoById" parameterType="Integer">
+		delete from app_info where id = #{id}
+	</delete>
+	
+	<select id="getAppInfoList" resultType="AppInfo">
+		select a.id, a.softwareName,a.APKName,a.supportROM,a.softwareSize,a.devId,
+				(select devName from dev_user where id = a.devId) as devName,
+				a.status,
+				(select valueName from data_dictionary d where  a.status=d.valueId AND d.typeCode='APP_STATUS') as statusName,
+				a.flatformId,
+				(select valueName from data_dictionary d where  a.flatformId=d.valueId AND d.typeCode='APP_FLATFORM') as flatformName,
+				a.categoryLevel1,
+				(select categoryName from app_category c where  c.id=a.categoryLevel1) as categoryLevel1Name,
+				a.categoryLevel2,
+				(select categoryName from app_category c where  c.id=a.categoryLevel2) as categoryLevel2Name,
+				a.categoryLevel3,
+				(select categoryName from app_category c where  c.id=a.categoryLevel3) as categoryLevel3Name,
+				a.downloads,
+				a.onSaleDate,
+				a.versionId,
+				(select v.versionNo from app_version v where v.id=a.versionId ) as versionNo
+			from  app_info a
+		<trim prefix="where" prefixOverrides="and | or">
+			<if test="softwareName != null and softwareName != ''">
+				and a.softwareName like CONCAT ('%',#{softwareName},'%')
+			</if>
+			<if test="status != null">
+				and a.status = #{status}
+			</if>
+			<if test="categoryLevel1 != null">
+				and a.categoryLevel1 = #{categoryLevel1}
+			</if>
+			<if test="categoryLevel2 != null">
+				and a.categoryLevel2 = #{categoryLevel2}
+			</if>
+			<if test="categoryLevel3 != null">
+				and a.categoryLevel3 = #{categoryLevel3}
+			</if>
+			<if test="flatformId != null">
+				and a.flatformId = #{flatformId}
+			</if>
+			<if test="devId != null">
+				and a.devId = #{devId}
+			</if>
+		</trim>
+		order by creationDate DESC limit #{from},#{pageSize}
+	</select>
+	
+	<select id="getAppInfoCount" resultType="Int">
+		select count(*) as count from app_info a
+			<trim prefix="where" prefixOverrides="and | or">
+				<if test="softwareName != null and softwareName != ''">
+					and a.softwareName like CONCAT ('%',#{softwareName},'%')
+				</if>
+				<if test="status != null">
+					and a.status = #{status}
+				</if>
+				<if test="categoryLevel1 != null">
+					and a.categoryLevel1 = #{categoryLevel1}
+				</if>
+				<if test="categoryLevel2 != null">
+					and a.categoryLevel2 = #{categoryLevel2}
+				</if>
+				<if test="categoryLevel3 != null">
+					and a.categoryLevel3 = #{categoryLevel3}
+				</if>
+				<if test="flatformId != null">
+					and a.flatformId = #{flatformId}
+				</if>
+				<if test="devId != null">
+					and a.devId = #{devId}
+				</if>
+			</trim>
+	</select>
+	
+	<select id="getAppInfo" resultType="AppInfo">
+		select * ,
+			(select devName from dev_user where id = a.devId) as devName,
+			(select valueName from data_dictionary d where  a.status=d.valueId AND d.typeCode='APP_STATUS') as statusName,
+			(select valueName from data_dictionary d where  a.status=d.valueId AND d.typeCode='APP_FLATFORM') as flatformName,
+			(select categoryName from app_category c where  c.id=a.categoryLevel1) as categoryLevel1Name,
+			(select categoryName from app_category c where  c.id=a.categoryLevel2) as categoryLevel2Name,
+			(select categoryName from app_category c where  c.id=a.categoryLevel3) as categoryLevel3Name,
+			(select v.versionNo from app_version v where v.id=a.versionId ) as versionNo
+		  from app_info a
+		  <trim prefix="where" prefixOverrides="and | or">
+				<if test="id != null">
+					and a.id = #{id}
+				</if>
+				<if test="APKName != null">
+					and a.APKName = #{APKName}
+				</if>
+		  </trim>
+	</select>
+	<update id="deleteAppLogo" parameterType="Integer">
+		update app_info 
+			set logoPicPath=null,
+				logoLocPath = null 
+			where id = #{id}
+	</update>
+	<update id="updateVersionId">
+		update app_info 
+			set versionId=#{versionId}
+			where id = #{id}
+	</update>
+
+	<update id="updateSatus">
+		update app_info 
+			set status=#{status}
+			where id = #{id}
+	</update> -->
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mg.application.organizeauthority.dao.OrganizeAuthorityDao">
+	<insert id="add_organizeauthority">
+		insert into j_authority values(#{zu_id},#{j_id},#{status});
+	</insert>
+	<select id="sel_orgauthority" resultType="Organizeauthority">
+		select * from j_authority j where j.idj =#{id} and j.status = 1
+	</select>
+	<select id="sel_authoritys" resultMap="Organizeauthoritys">
+		select o.organizename,o.id,j.idj from j_authority j,organize o where o.fid= #{jid} and j.status = 1 and j.idj = #{zu_id} and j.organizeid = o.id
+	</select>
+	<resultMap type="Organizeauthority" id="Organizeauthoritys">
+		<result column="idj" property="idj"/>  
+        <result column="organizeid" property="organizeid"/> 
+        <result column="status" property="status"/> 
+        <collection property="lio" ofType="Organize">
+          	<id column="id" property="id"/>
+            <result column="organizename" property="organizename"/> 
+        </collection> 
+	</resultMap>
+	<insert id="add_organ">
+		INSERT INTO j_authority (idj,organizeid) SELECT Z.ID,O.id FROM organize O,zu_authority Z WHERE Z.ID = #{id};
+	</insert>
+	<!-- 批量更新节点id,根据传入的节点id和状态（还要权限组的id，不能将其他的权限也更新了） -->
+	<update id="upd_organ" parameterType="Organizeauthority">
+	 <foreach collection="param" separator=";" item="param">  
+        update j_authority 
+        <set> status = #{param.status} </set>
+        where organizeid = #{param.organizeid} and idj = #{param.idj}
+    </foreach>
+	</update>
+	<delete id="del_organ">
+		delete from j_authority where idj = #{zu_id}
+	</delete>
+	<insert id="add_organzu" parameterType="Organizeauthority">
+		<foreach collection="od" separator=";" item="param">
+			insert into j_authority values(#{param.idj},#{param.organizeid},0)
+		</foreach>
+	</insert>
+</mapper>

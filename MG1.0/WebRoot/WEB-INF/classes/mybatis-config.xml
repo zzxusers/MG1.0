@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 先引入databse文件 -->
+	<!-- <properties resource="database.properties"/> -->
+	<!-- <settings>
+		<setting name="logImpl" value="LOG4J"/>
+		设置映射级别，值为none是说明禁止自动映射
+		
+	</settings> -->
+	
+	<typeAliases>
+		<!-- <package name="com.mg.application.user.entity"/>
+		<package name="com.mg.application.organize.entity"/> -->
+		<!-- <pachge name=""/> --> 
+		<typeAlias type="com.mg.application.user.entity.User" alias="User"/>
+		<typeAlias type="com.mg.application.organize.entity.Organize" alias="Organize"/> 
+		<typeAlias type="com.mg.application.equipment.entity.Equipment" alias="Equipment"/>
+		<typeAlias type="com.mg.application.organizeauthority.entity.Organizeauthority" alias="Organizeauthority"/>  
+		<typeAlias type="com.mg.application.menuauthority.entity.Menuauthority" alias="Menuauthority"/>
+		<typeAlias type="com.mg.application.authority.entity.ZuAuthority" alias ="ZuAuthority"/>
+		<typeAlias type="com.mg.application.equipmentauthority.entity.EquipmentAuthority" alias ="EquipmentAuthority"/>
+	</typeAliases>
+	
+	
+	<!-- <environments default="development">
+		<environment id = "development">
+			<transactionManager type="JDBC"></transactionManager>
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}"/>
+				<property name="url" value="${url}"/>
+				<property name="username" value="${user}"/>
+				<property name="password" value="${password}"/>
+				
+			</dataSource> 
+			
+		</environment>
+		
+	</environments> -->
+		 
+	<!-- 将mapper文件加入到配置文件中 -->
+	<!-- <mappers>
+		 <mapper resource="cn/myschool/sqlMapper/Users.xml"/>
+		<mapper resource="cn/myschool/sqlMapper/news.xml"/>
+		<mapper resource="cn/myschool/sqlMapper/product_fl.xml"/>
+		<mapper resource="cn/myschool/sqlMapper/products.xml"/>
+		<mapper resource="cn/myschool/sqlMapper/order.xml"/>
+		<mapper resource="cn/myschool/sqlMapper/order_datail.xml"/>
+		<mapper resource="cn/myschool/sqlMapper/comment.xml"/>
+	</mappers> -->
+</configuration>

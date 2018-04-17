@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+    <style>
+        .loginBox{
+            background: aquamarine;
+            border: 1px solid aquamarine;
+            border-radius: 5px;
+            width: 300px;
+            height: 200px;
+            margin-top: 100px;
+            margin-left: 40%;
+            text-align: center;
+        }
+        .inputBox{
+            margin-top: 20px;
+        }
+        #login{
+            width: 100px;
+            background-color: #e4393c;
+            border: 1px solid #e4393c;
+            border-radius: 8px;
+            height: 36px;
+            color: white;
+            line-height: 36px;
+            font-size: 16px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<a href ="/MG1.0/test">asdfa</a>
+    <div class="loginBox">
+        <div class="inputBox">
+            <span>账号</span>
+            <input id="user" type="text">
+        </div>
+        <div class="inputBox">
+            <span>密码</span>
+            <input id="pwd" type="password">
+        </div>
+        <div class="inputBox">
+            <a id="login" href="#">登 录</a>
+        </div>
+    </div>
+</body>
+<script>
+    var login=document.getElementById('login');
+    login.onclick=function () {
+        var user=document.getElementById('user').value;
+        var pwd=document.getElementById('pwd').value;
+        //创建异步对象
+        var xhr = new XMLHttpRequest();
+        //设置请求的类型及url
+
+       xhr.open('post','/MgMonitorManage/login');
+        //post请求一定要添加请求头才行不然会报错
+        xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		
+        //发送请求
+        xhr.send('loginname='+user+'&password='+pwd);
+        xhr.onreadystatechange = function () {
+            // 这步为判断服务器是否正确响应
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                console.log(xhr.responseText);
+            }
+        };
+
+    }
+</script>
+</html>

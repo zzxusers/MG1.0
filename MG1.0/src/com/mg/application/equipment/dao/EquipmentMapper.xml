@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mg.application.equipment.dao.EquipmentDao">
+	<select id="sel_quipment" resultType="Equipment">
+		select * from equipment where 1=1
+		<if test="id!=null and id !=0"> and id = #{id}</if>
+		<if test="equipmentname!='' and equipmentname!=null"> and equipmentname = #{equipmentname}</if>
+		<if test="organizename!='' and organizename!=null"> and orgznizename = #{organizename}</if> 
+		<if test="organizeid!='' and organizeid!=null"> and orgznizeid = #{organizeid}</if>
+		<if test="organizeid == 0"> and orgznizeid = #{organizeid}</if>
+		<if test="currentpage!=null">LIMIT #{currentpage},2</if>
+	</select>
+	<!-- <insert id="add_sauth">
+		 INSERT INTO s_authority (organizeid,equipmentid) SELECT orgznizeid,id FROM equipment;
+	</insert> -->
+	<delete id="del_equipment" parameterType="Integer">
+		delete from equipment where id = #{id};
+		delete from s_authority where equipmentid = #{id}; 
+	</delete>
+	<!-- Integer id,Integer joins,Integer equipmenttype,
+							String equipmentname,
+							Integer shop,
+							String equipmentversion,
+							String ip,
+							Integer ports,
+							String loginname,
+							String loginpaws,
+							Integer orgznizeid,
+							Integer pas_scount,
+							Integer pass_type,
+							String txt -->
+	<update id="upd_equipment" parameterType="Equipment">
+		update equipment 
+		<trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+			<if test="id != null">id=#{id},</if>
+			<if test="joins != null">joins=#{joins},</if>
+			<if test="equipmenttype != null">equipmenttype=#{equipmenttype},</if>
+			<if test="equipmentname != null">equipmentname=#{equipmentname},</if>
+			<if test="shop != null">shop=#{shop},</if>
+			<if test="equipmentversion != null">equipmentversion=#{equipmentversion},</if>
+			<if test="ip != null">ip=#{ip},</if>
+			<if test="ports != null">ports=#{ports},</if>
+			<if test="loginname != null">loginname=#{loginname},</if>
+			<if test="loginpaws != null">loginpaws=#{loginpaws},</if>
+			<if test="orgznizeid != null">orgznizeid=#{orgznizeid},</if>
+			<if test="pass_count != null">pass_count=#{pass_count},</if>
+			<if test="pass_type != null">pass_type=#{pass_type},</if>
+			<if test="txt != null">txt=#{txt}</if>
+		</trim>
+	</update>
+	<insert id="add_equipment" parameterType="Equipment" useGeneratedKeys="true" keyProperty="eq.id">
+		insert into equipment(id,joins,equipmenttype,equipmentname,shop,equipmentversion,ip,ports,loginname,loginpaws,orgznizeid,pass_count,pass_type,txt)
+		values(#{eq.id},#{eq.joins},#{eq.equipmenttype},#{eq.equipmentname},#{eq.shop},#{eq.equipmentversion},#{eq.ip},#{eq.ports},#{eq.loginname},#{eq.loginpaws},#{eq.organizeid},#{eq.pass_count},#{eq.pass_type},#{eq.txt});
+		 
+		<foreach collection="equipmentau" separator=";" item="equip">
+			insert into s_authority values(#{equip.organizeid},(select max(id) from equipment),0,#{equip.zu_id})
+		</foreach>
+	</insert>
+</mapper>

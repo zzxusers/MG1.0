@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mg.application.organize.dao.OrganizeDao">
+	<select id="sel_organize" resultType="Organize">
+		select * from organize <if test="id != null">where fid = #{id}</if>
+		<!-- select o.*,e.id,e.equipmentname from organize o,equipment e <if test="id!=null"> where o.fid = #{id} and e.orgznizeid = #{id}</if> -->
+	</select>
+	<resultMap type="Organize" id="Organizes">  
+        <id column="id" property="id"/>  
+        <result column="organizename" property="organizename"/> 
+        <result column="fid" property="fid"/> 
+        <collection property="eqli" ofType="Equipment" column="id">  
+            <id column="id" property="id"/><!-- 这里的column对应的是下面查询的别名，而不是表字段名 -->  
+            <result column="equipmentname" property="equipmentname"/>  
+        </collection>  
+    </resultMap> 
+	<insert id="add_organize" parameterType="Organize" useGeneratedKeys="true" keyProperty="organize.id">
+		insert into organize values(#{organize.id},#{organize.organizename},#{organize.fid});
+	</insert>
+	<!-- 删除节点，删除节点将会删除该节点下面的所有的子节点和设备还会删除节点权限表的数据。 -->
+	<delete id="del_organize" parameterType="Integer">
+		delete from organize where id=#{id};<!-- 删除节点 -->
+		delete from organize where fid=#{id};<!-- 删除该节点下面的子节点 -->
+		delete from equipment where orgznizeid=#{id};<!-- 删除该节点下面的子设备 -->
+		delete from j_authority where organizeid = #{id};<!-- 删除该节点下面的节点权限 -->
+	</delete>
+	<update id="upd_organize">
+		update organize
+		<trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+			<if test="id != null">id=#{id},</if>
+			<if test="organizename != null">organizename=#{organizename},</if>
+	    </trim>
+	</update>
+</mapper>
+
